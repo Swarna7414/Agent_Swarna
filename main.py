@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI
 from PriceFetcher.BitcoinPriceFetcher import BitcoinPriceFetcher
 from SentimentAnalyzer.NewsSentimentAnalyzer import NewsSentimentAnalyzer
@@ -9,7 +10,7 @@ app = FastAPI()
 
 price_fetcher = BitcoinPriceFetcher()
 news_analyzer = NewsSentimentAnalyzer()
-model = PPO.load("ppoagent")
+model = PPO.load("./ppo_sentiment_trading_model.zip")
 
 
 starting_balance = 35000
@@ -73,3 +74,6 @@ def get_status():
 
     else:
         return {"error": "Due to API Error Couldn't able to get the Response"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
