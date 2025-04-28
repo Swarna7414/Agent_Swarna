@@ -1,0 +1,7 @@
+numpy
+torch
+stable-baselines3
+requests
+vaderSentiment
+fastapi
+uvicorn
