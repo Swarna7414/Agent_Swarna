@@ -16,12 +16,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ Load agent and environment tools
+
 agent = PPO.load("Agent/Agent_Swarna.zip")
 price_fetcher = BitcoinPriceFetcher()
 sentiment_analyzer = NewsSentimentAnalyzer()
 
-# ✅ Initial trading state
+
 starting_balance = 35000
 balance = starting_balance
 crypto_held = 0
@@ -43,7 +43,7 @@ def trade():
     close_price = live_candle['close']
     volume = live_candle['volume']
 
-    # Create observation vector
+    
     obs = np.array([
         open_price,
         high_price,
