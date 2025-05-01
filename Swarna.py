@@ -59,11 +59,11 @@ def trade():
     obs[0:5] /= 100_000
     obs[5:8] /= 100_000
 
-    # Get action from agent
+
     action, _ = agent.predict(obs, deterministic=False)
     action = float(action[0])
 
-    # Execute trade
+
     if action > 0 and balance > 0:
         invest_amount = balance * min(action, 1.0)
         crypto_held += invest_amount / close_price
@@ -89,6 +89,7 @@ def trade():
         "Sentiment": f"{sentiment_score:.4f}",
         "Profit_Loss": f"${profit_loss:.2f}"
     }
+
 @app.get("/news")
 def get_news_headlines():
     try:
