@@ -1,0 +1,1 @@
+This project employs Reinforcement Learning (RL) to generate Bitcoin trading suggestions (Buy/Hold/Sell). By training an RL agent on historical data and integrating real-time Bitcoin prices along with relevant news, the system aims to provide users with intelligent and timely guidance on potential trading actions.
