@@ -105,3 +105,31 @@ def get_sentiment_score():
         return {"sentiment": round(sentiment_score, 3)}
     except Exception as e:
         return {"error": str(e)}
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint for monitoring and deployment pipelines"""
+    try:
+        # Check if agent is loaded
+        agent_check = agent is not None
+        # Check if price fetcher is initialized
+        price_check = price_fetcher is not None
+        # Check if sentiment analyzer is initialized
+        sentiment_check = sentiment_analyzer is not None
+        
+        if agent_check and price_check and sentiment_check:
+            return {
+                "status": "healthy",
+                "agent": "loaded",
+                "price_fetcher": "ready",
+                "sentiment_analyzer": "ready"
+            }
+        else:
+            return {
+                "status": "unhealthy",
+                "agent": "loaded" if agent_check else "not loaded",
+                "price_fetcher": "ready" if price_check else "not ready",
+                "sentiment_analyzer": "ready" if sentiment_check else "not ready"
+            }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
