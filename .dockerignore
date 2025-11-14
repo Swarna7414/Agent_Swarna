@@ -1,0 +1,41 @@
+# Python cache and compiled files
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist/
+build/
+
+# Git and IDE files
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Environment files
+.env
+.venv
+venv/
+ENV/
+env/
+
+# Data files (excluding TestData.csv)
+*.csv
+!src/Data/TestData.csv
+
+# OS files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Note: Agent/Agent_Swarna.zip is INCLUDED (not excluded)
+# All zip files will be included in the Docker build
+
