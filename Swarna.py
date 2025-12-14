@@ -8,7 +8,8 @@ from SentimentAnalyzer.NewsSentimentAnalyzer import NewsSentimentAnalyzer
 app = FastAPI(
     title="Agent Swarna API",
     description="Bitcoin Trading Agent using Reinforcement Learning",
-    version="1.0.0"
+    version="1.0.0",
+    root_path=""
 )
 
 
