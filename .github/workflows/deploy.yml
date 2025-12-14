@@ -29,18 +29,18 @@ jobs:
       - name: Validate required files
         run: |
           echo "Checking required files..."
-          [ -f "Swarna.py" ] || (echo "❌ Swarna.py not found" && exit 1)
-          [ -f "Dockerfile" ] || (echo "❌ Dockerfile not found" && exit 1)
-          [ -f "requirements.txt" ] || (echo "❌ requirements.txt not found" && exit 1)
-          [ -f "Agent/Agent_Swarna.zip" ] || (echo "❌ Agent/Agent_Swarna.zip not found" && exit 1)
-          echo "✅ All required files present"
+          [ -f "Swarna.py" ] || (echo " Swarna.py not found" && exit 1)
+          [ -f "Dockerfile" ] || (echo " Dockerfile not found" && exit 1)
+          [ -f "requirements.txt" ] || (echo " requirements.txt not found" && exit 1)
+          [ -f "Agent/Agent_Swarna.zip" ] || (echo " Agent/Agent_Swarna.zip not found" && exit 1)
+          echo " All required files present"
 
       - name: Validate Python syntax
         run: |
           python -m py_compile Swarna.py
           python -m py_compile PriceFetcher/BitcoinPriceFetcher.py
           python -m py_compile SentimentAnalyzer/NewsSentimentAnalyzer.py
-          echo "✅ Python syntax validation passed"
+          echo " Python syntax validation passed"
 
       - name: Check health endpoint exists
         run: |
@@ -49,9 +49,9 @@ jobs:
           with open('Swarna.py', 'r') as f:
               content = f.read()
           if '@app.get(\"/health\")' in content or '@app.get(\"/health\")' in content:
-              print('✅ Health endpoint found in code')
+              print('Health endpoint found in code')
           else:
-              print('❌ Health endpoint not found')
+              print('Health endpoint not found')
               exit(1)
           "
 
@@ -69,6 +69,18 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
         run: |
+          echo "Checking HF_TOKEN availability..."
+          if [ -z "$HF_TOKEN" ]; then
+            echo "❌ Error: HF_TOKEN is not set!"
+            echo "Please ensure HUGGINGFACE_TOKEN secret is configured in your GitHub repository settings."
+            echo "Go to: Settings > Secrets and variables > Actions > New repository secret"
+            echo "Name: HUGGINGFACE_TOKEN"
+            echo "Value: Your Hugging Face token (get it from https://huggingface.co/settings/tokens)"
+            exit 1
+          else
+            echo "HF_TOKEN is set (length: ${#HF_TOKEN} characters)"
+          fi
+          
           python << EOF
           from huggingface_hub import HfApi, login
           import os
@@ -77,13 +89,16 @@ jobs:
           token = os.environ.get('HF_TOKEN')
           if not token:
               print("Error: HF_TOKEN not set!")
+              print("Please configure HUGGINGFACE_TOKEN secret in GitHub repository settings.")
               sys.exit(1)
           
           print("Logging in to Hugging Face...")
           try:
               login(token=token, add_to_git_credential=False)
+              print("Successfully logged in to Hugging Face")
           except Exception as e:
-              print(f"Login failed: {e}")
+              print(f" Login failed: {e}")
+              print("Please verify your token is valid and has write access to the space.")
               sys.exit(1)
           
           print("Uploading to Hugging Face Space...")
@@ -96,26 +111,30 @@ jobs:
                   ignore_patterns=['__pycache__', '.git', '*.pyc', '.github', '*.log', 'logs', '.idea', '.vscode', 'venv', 'env', '.venv'],
                   commit_message='Deploy from GitHub Actions'
               )
-              print("✅ Deployment complete!")
+              print(" Deployment complete!")
           except Exception as e:
-              print(f"Upload failed: {e}")
+              print(f" Upload failed: {e}")
+              print("Please check:")
+              print("1. Token has write access to the space")
+              print("2. Space exists: SaiSankarSwarna/Agent_Swarna")
+              print("3. Repository name and permissions are correct")
               sys.exit(1)
           EOF
 
       - name: Deployment Summary
         if: always()
         run: |
-          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### ✅ Validation Results" >> $GITHUB_STEP_SUMMARY
-          echo "- Dockerfile: ✅ Present" >> $GITHUB_STEP_SUMMARY
-          echo "- Main Application: ✅ Present" >> $GITHUB_STEP_SUMMARY
-          echo "- Agent Model: ✅ Present" >> $GITHUB_STEP_SUMMARY
-          echo "- Requirements: ✅ Present" >> $GITHUB_STEP_SUMMARY
-          echo "- Health Endpoint: ✅ Present" >> $GITHUB_STEP_SUMMARY
-          echo "- Health Check: ✅ Passed" >> $GITHUB_STEP_SUMMARY
-          echo "- Hugging Face Deployment: ✅ Completed" >> $GITHUB_STEP_SUMMARY
+          echo "### Validation Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Dockerfile: Present" >> $GITHUB_STEP_SUMMARY
+          echo "- Main Application: Present" >> $GITHUB_STEP_SUMMARY
+          echo "- Agent Model:  Present" >> $GITHUB_STEP_SUMMARY
+          echo "- Requirements:  Present" >> $GITHUB_STEP_SUMMARY
+          echo "- Health Endpoint:  Present" >> $GITHUB_STEP_SUMMARY
+          echo "- Health Check: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- Hugging Face Deployment: Completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📝 Space Information" >> $GITHUB_STEP_SUMMARY
+          echo "###  Space Information" >> $GITHUB_STEP_SUMMARY
           echo "- Space: [SaiSankarSwarna/Agent_Swarna](https://huggingface.co/spaces/SaiSankarSwarna/Agent_Swarna)" >> $GITHUB_STEP_SUMMARY
           echo "- Health Endpoint: \`/health\`" >> $GITHUB_STEP_SUMMARY
