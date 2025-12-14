@@ -36,7 +36,7 @@ EXPOSE 7860
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
-ENV PORT=7860
 
 # Run the application
-CMD uvicorn Swarna:app --host=0.0.0.0 --port=${PORT:-7860}
+# Hugging Face Spaces will set the PORT environment variable
+CMD uvicorn Swarna:app --host=0.0.0.0 --port=${PORT:-7860} --workers 1

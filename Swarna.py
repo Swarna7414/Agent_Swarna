@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
-from stable_baselines3 import PPO
+from stable_baselines3 import PPO  # type: ignore
 from PriceFetcher.BitcoinPriceFetcher import BitcoinPriceFetcher
 from SentimentAnalyzer.NewsSentimentAnalyzer import NewsSentimentAnalyzer
 
-app = FastAPI()
+app = FastAPI(
+    title="Agent Swarna API",
+    description="Bitcoin Trading Agent using Reinforcement Learning",
+    version="1.0.0"
+)
 
 
 app.add_middleware(
@@ -26,6 +30,19 @@ starting_balance = 35000
 balance = starting_balance
 crypto_held = 0
 net_worth = starting_balance
+
+@app.get("/")
+def root():
+    return {
+        "message": "Agent Swarna API is running",
+        "endpoints": {
+            "health": "/health",
+            "agent": "/agent",
+            "news": "/news",
+            "sentiment": "/sentiment",
+            "docs": "/docs"
+        }
+    }
 
 @app.get("/agent")
 def trade():
