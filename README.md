@@ -4,6 +4,7 @@ colorFrom: blue
 colorTo: purple
 sdk: docker
 app_file: Swarna.py
+app_port: 7860
 pinned: false
 ---
 
